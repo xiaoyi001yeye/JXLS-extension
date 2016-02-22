@@ -1,7 +1,5 @@
 package maven.search;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -11,6 +9,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,8 +34,8 @@ public class MavenSearch {
             NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
             System.out.println("node size = " + nodes.getLength());
 
-            List<Project> projectList = Lists.newArrayList();
-            Set<String> projectFlags = Sets.newHashSet();
+            List<Project> projectList = new ArrayList<Project>();
+            Set<String> projectFlags = new HashSet<String>();
             for (int i = 0; i < nodes.getLength(); i++) {
                 Project project = new Project();
                 NodeList nl = nodes.item(i).getChildNodes();
