@@ -1,81 +1,80 @@
 package maven.search;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import com.fasterxml.aalto.sax.SAXParserFactoryImpl;
+import com.fasterxml.aalto.sax.SAXProperty;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.junit.Test;
+import org.xml.sax.InputSource;
+import org.xml.sax.ext.DeclHandler;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
+import javax.xml.parsers.SAXParser;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.net.URL;
+import java.nio.ByteBuffer;
 
 /**
  * Created by weiyi on 16/2/23.
  */
 public class MavenSearch {
-    public static void main(String[] args) {
-        File file = new File("http://repo1.maven.org/maven2/archetype-catalog.xml");
-
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = dbf.newDocumentBuilder();
-            InputStream in = new FileInputStream(file);
-            Document doc = builder.parse(in);
-            XPathFactory factory = XPathFactory.newInstance();
-            XPath xpath = factory.newXPath();
-            // 选取所有class元素的name属性
-            // XPath语法介绍： http://w3school.com.cn/xpath/
-            XPathExpression expr = xpath.compile("//archetype[contains(description,'Spring Boot')]");
-            NodeList nodes = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-            System.out.println("node size = " + nodes.getLength());
-
-            List<Project> projectList = new ArrayList<Project>();
-            Set<String> projectFlags = new HashSet<String>();
-            for (int i = 0; i < nodes.getLength(); i++) {
-                Project project = new Project();
-                NodeList nl = nodes.item(i).getChildNodes();
-                project.setGroupId(nl.item(1).getTextContent());
-                project.setArtifactId(nl.item(3).getTextContent());
-                project.setVersion(nl.item(5).getTextContent());
-                String projectFlag = String.format("%s::%s",project.getGroupId(),project.getArtifactId());
-                if(!projectFlags.contains(projectFlag)){
-                    projectFlags.add(projectFlag);
-                    projectList.add(project);
-                }
-
-            }
-            System.out.println("project size = "+projectList.size());
-            for (int i = 0; i <projectList.size() ; i++) {
-                System.out.println(projectList.get(i));
-            }
-            File projectRoot = new File("/Users/wy/code/mvnSpringBoot");
-            if(projectRoot.exists()){
-                projectRoot.delete();
-            }
-            projectRoot.mkdirs();
-            projectRoot.setWritable(true);
-
-            for (Project project : projectList){
-                execMvnCmd(project);
-            }
+    public static void main(String[] args) throws Exception {
+//        parseXml(openHttp());
+//            File projectRoot = new File("/Users/wy/code/mvnSpringBoot");
+//            if(projectRoot.exists()){
+//                projectRoot.delete();
+//            }
+//            projectRoot.mkdirs();
+//            projectRoot.setWritable(true);
+//
+//            for (Project project : projectList){
+//                execMvnCmd(project);
+//            }
 
 
             System.out.println("Done.");
 
-        } catch (XPathExpressionException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+    }
+
+    @Test
+    public void getFile() throws IOException {
+        URL input = MavenSearch.class.getResource("/x.xml");
+
+        if(input == null || input.openStream()!=null){
+            FileOutputStream fos = new FileOutputStream("/x.xml")
+            fos.write(input2byte());
         }
+    }
+
+//    @Test
+    public InputStream openHttp() throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("http://repo1.maven.org/maven2/archetype-catalog.xml")
+                .build();
+        Response response = client.newCall(request).execute();
+        return response.body().byteStream();
+    }
+
+    public static void parseXml(InputStream inputSteam) throws Exception {
+        SAXParserFactoryImpl spf = new SAXParserFactoryImpl();
+        SAXParser sp = spf.newSAXParser();
+        SaxHandler h = new SaxHandler();
+        sp.setProperty(SAXProperty.LEXICAL_HANDLER.toExternal(), (DeclHandler) h);
+        sp.parse(new InputSource(inputSteam), h);
+    }
+
+    public static ByteBuffer input2byte(InputStream inStream)
+            throws IOException {
+        ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
+        byte[] buff = new byte[100];
+        int rc = 0;
+        while ((rc = inStream.read(buff, 0, 100)) > 0) {
+            swapStream.write(buff, 0, rc);
+        }
+        byte[] in2b = swapStream.toByteArray();
+        return ByteBuffer.wrap(in2b);
     }
 
 
