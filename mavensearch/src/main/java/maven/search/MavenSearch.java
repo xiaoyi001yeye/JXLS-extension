@@ -1,5 +1,11 @@
 package maven.search;
 
+import com.ddtek.xquery.expr.QName;
+import com.ddtek.xquery3.XQConnection;
+import com.ddtek.xquery3.XQExpression;
+import com.ddtek.xquery3.XQItemType;
+import com.ddtek.xquery3.XQResultSequence;
+import com.ddtek.xquery3.xqj.DDXQDataSource;
 import com.fasterxml.aalto.sax.SAXParserFactoryImpl;
 import com.fasterxml.aalto.sax.SAXProperty;
 import okhttp3.OkHttpClient;
@@ -19,7 +25,10 @@ import java.nio.ByteBuffer;
  */
 public class MavenSearch {
     public static void main(String[] args) throws Exception {
-//        parseXml(openHttp());
+        long startTime = System.currentTimeMillis();
+        InputStream httpStream = openHttp();
+        System.out.println("get http time = " + (System.currentTimeMillis()-startTime));
+        parseXml(httpStream);
 //            File projectRoot = new File("/Users/wy/code/mvnSpringBoot");
 //            if(projectRoot.exists()){
 //                projectRoot.delete();
@@ -37,18 +46,35 @@ public class MavenSearch {
 
     }
 
-    @Test
-    public void getFile() throws IOException {
-        URL input = MavenSearch.class.getResource("/x.xml");
+//    @Test
+//    public void getFile() throws IOException {
+//        URL input = MavenSearch.class.getResource("/Users/wy/code/mvnSpringBoot");
+//
+//        if(input == null || input.openStream()!=null){
+//            FileOutputStream fos = new FileOutputStream("/x.xml");
+//            fos.write(input2byte());
+//        }
+//    }
 
-        if(input == null || input.openStream()!=null){
-            FileOutputStream fos = new FileOutputStream("/x.xml")
-            fos.write(input2byte());
-        }
-    }
+//    public static void xquery(InputStream inputSteam) throws Exception{
+//        DDXQDataSource ds = new DDXQDataSource();
+//        XQConnection conn = ds.getConnection();
+//        XQExpression expression =conn.createExpression();
+//        expression.bindString(new QName("configuration"), configuration,
+//                conn.createAtomicType(XQItemType.XQBASETYPE_STRING));
+//        expression.bindString(new QName("usage"), usage,
+//                conn.createAtomicType(XQItemType.XQBASETYPE_STRING));
+//        XQResultSequence result = expression.executeQuery(inputSteam);
+//        while (result.next()) {
+//            System.out.println(result.getItemAsString(null));
+//        }
+//        result.close();
+//        exps.close();
+//        conn.close();
+//    }
 
 //    @Test
-    public InputStream openHttp() throws IOException {
+    public static InputStream openHttp() throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("http://repo1.maven.org/maven2/archetype-catalog.xml")

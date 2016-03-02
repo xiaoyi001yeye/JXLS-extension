@@ -54,5 +54,14 @@
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcomponents-client:4.5.1" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.12" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: ddxq:ddxq:1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../XQueryInjection/DataDirect/lib/ddxq.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

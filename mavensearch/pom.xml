@@ -49,6 +49,16 @@
             <version>4.12</version>
         </dependency>
 
+        <dependency>
+            <groupId>ddxq</groupId>
+            <artifactId>ddxq</artifactId>
+            <scope>system</scope>
+            <version>1</version>
+            <systemPath>D:\\code\\XQueryInjection\\DataDirect\\lib\\ddxq.jar</systemPath>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
