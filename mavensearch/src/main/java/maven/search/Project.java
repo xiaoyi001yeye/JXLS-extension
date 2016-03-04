@@ -13,6 +13,17 @@ public class Project implements Comparable<Project> {
 
     private String artifactId;
 
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Project setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
     public String getGroupId() {
         return groupId;
     }
